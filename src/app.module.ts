@@ -11,6 +11,8 @@ import { DishsModule } from './dishs/dishs.module';
 import { DishsnapshotsModule } from './dishsnapshots/dishsnapshots.module';
 import { TablesModule } from './tables/tables.module';
 import { GuestsModule } from './guests/guests.module';
+import { AuthModule } from './auth/auth.module';
+import { SeedsModule } from './seeds/seeds.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { GuestsModule } from './guests/guests.module';
     DishsnapshotsModule,
     TablesModule,
     GuestsModule,
+    AuthModule,
+    SeedsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
