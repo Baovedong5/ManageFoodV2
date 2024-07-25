@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -15,6 +17,7 @@ import { IUser } from 'src/accounts/user.interface';
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => AccountsService))
     private accountService: AccountsService,
     private jwtService: JwtService,
     private configService: ConfigService,

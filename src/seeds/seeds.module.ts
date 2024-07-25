@@ -3,11 +3,11 @@ import { SeedsService } from './seeds.service';
 import { SeedsController } from './seeds.controller';
 import { Account } from 'src/accounts/entities/account.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccountsService } from 'src/accounts/accounts.service';
+import { AccountsModule } from 'src/accounts/accounts.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Account])],
+  imports: [TypeOrmModule.forFeature([Account]), AccountsModule],
   controllers: [SeedsController],
-  providers: [SeedsService, AccountsService],
+  providers: [SeedsService],
 })
 export class SeedsModule {}
