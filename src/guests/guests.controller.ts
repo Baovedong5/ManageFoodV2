@@ -1,34 +1,66 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Res,
+  Req,
+} from '@nestjs/common';
 import { GuestsService } from './guests.service';
-import { CreateGuestDto } from './dto/create-guest.dto';
-import { UpdateGuestDto } from './dto/update-guest.dto';
+import { Public, ResponseMessage, Roles, User } from 'src/decorators/customize';
+import { GuestLoginDto } from './dto/guest-login.dto';
+import { Request, Response } from 'express';
+import { IUser } from 'src/accounts/user.interface';
+import { Role } from 'src/constants/enum';
+import { guestCreateOrderDto } from './dto/guest-create-order.dto';
 
 @Controller('guests')
 export class GuestsController {
   constructor(private readonly guestsService: GuestsService) {}
 
-  @Post()
-  create(@Body() createGuestDto: CreateGuestDto) {
-    return this.guestsService.create(createGuestDto);
+  @Public()
+  @ResponseMessage('Login successfully')
+  @Post('/auth/login')
+  guestLogin(
+    @Body() body: GuestLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.guestsService.guestLogin(body, response);
   }
 
-  @Get()
-  findAll() {
-    return this.guestsService.findAll();
+  @ResponseMessage('Logout successfully')
+  @Post('/auth/logout')
+  guestLogout(
+    @Res({ passthrough: true }) response: Response,
+    @User() user: IUser,
+  ) {
+    return this.guestsService.guestLogout(response, user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.guestsService.findOne(+id);
+  @ResponseMessage('Get new token successfully')
+  @Post('/auth/refresh-token')
+  guestRefreshToken(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const guestRefreshToken = request.cookies['guest_refresh_token'];
+
+    return this.guestsService.guestRefreshToken(guestRefreshToken, response);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGuestDto: UpdateGuestDto) {
-    return this.guestsService.update(+id, updateGuestDto);
+  @Roles(Role.Guest)
+  @ResponseMessage('Order successfully')
+  @Post('/order')
+  guestCreateOrder(@Body() body: guestCreateOrderDto[], @User() user: IUser) {
+    return this.guestsService.guestCreateOrder(body, user);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.guestsService.remove(+id);
+  @Roles(Role.Guest)
+  @ResponseMessage("Get lish order successfully")
+  @Get("/orders")
+  guestGetListOrder(
+    @User() user: IUser
+  ){
+    return this.guestsService.guestGetListOrder(user)
   }
 }

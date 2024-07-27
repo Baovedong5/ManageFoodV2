@@ -28,6 +28,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(to).emit(event, data);
   }
 
+  handleEmitSocketFrom({data, event, to, from}){
+    this.server.to(to).to(from).emit(event, data);
+  }
+
   async handleConnection(socket: Socket) {
     const authHeader = socket.handshake.headers.authorization;
 

@@ -13,6 +13,7 @@ import { TablesModule } from './tables/tables.module';
 import { GuestsModule } from './guests/guests.module';
 import { AuthModule } from './auth/auth.module';
 import { SeedsModule } from './seeds/seeds.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SeedsModule } from './seeds/seeds.module';
     GuestsModule,
     AuthModule,
     SeedsModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
