@@ -104,12 +104,16 @@ export class OrdersService {
               status: OrderStatus.Pending,
             });
 
-            type OrderRecord = typeof orderRecord;
-            return orderRecord as OrderRecord & {
-              status: (typeof OrderStatus)[keyof typeof OrderStatus];
-              dishSnapshot: OrderRecord['dishSnapshot'] & {
-                status: (typeof DishStatus)[keyof typeof DishStatus];
-              };
+            return {
+              ...orderRecord,
+              status: orderRecord.status,
+              guest: {
+                ...guest,
+              },
+              dishSnapshot: {
+                ...dishSnapshot,
+                status: dishSnapshot.status,
+              },
             };
           }),
         );
@@ -147,21 +151,32 @@ export class OrdersService {
   async getListOrder(query: queryOrderDto) {
     const { fromDate, toDate } = query;
 
-    const orders = await this.orderRepository.find({
-      where: {
-        createdAt: Between(fromDate, toDate),
-      },
-      order: {
-        createdAt: 'DESC',
-      },
-      relations: {
-        dishSnapshot: true,
-        orderHandler: true,
-        guest: true,
-      },
-    });
-
-    return orders;
+    if (fromDate && toDate) {
+      return await this.orderRepository.find({
+        where: {
+          createdAt: Between(fromDate, toDate),
+        },
+        order: {
+          createdAt: 'DESC',
+        },
+        relations: {
+          dishSnapshot: true,
+          orderHandler: true,
+          guest: true,
+        },
+      });
+    } else {
+      return await this.orderRepository.find({
+        order: {
+          createdAt: 'DESC',
+        },
+        relations: {
+          dishSnapshot: true,
+          orderHandler: true,
+          guest: true,
+        },
+      });
+    }
   }
 
   async getOrderDetail(orderId: number) {
@@ -175,6 +190,8 @@ export class OrdersService {
         guest: true,
       },
     });
+
+    return order;
   }
 
   async updateOrder(

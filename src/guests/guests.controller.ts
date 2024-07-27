@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Res,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Req } from '@nestjs/common';
 import { GuestsService } from './guests.service';
 import { Public, ResponseMessage, Roles, User } from 'src/decorators/customize';
 import { GuestLoginDto } from './dto/guest-login.dto';
@@ -50,17 +43,15 @@ export class GuestsController {
 
   @Roles(Role.Guest)
   @ResponseMessage('Order successfully')
-  @Post('/order')
+  @Post('/orders')
   guestCreateOrder(@Body() body: guestCreateOrderDto[], @User() user: IUser) {
     return this.guestsService.guestCreateOrder(body, user);
   }
 
   @Roles(Role.Guest)
-  @ResponseMessage("Get lish order successfully")
-  @Get("/orders")
-  guestGetListOrder(
-    @User() user: IUser
-  ){
-    return this.guestsService.guestGetListOrder(user)
+  @ResponseMessage('Get lish order successfully')
+  @Get('/orders')
+  guestGetListOrder(@User() user: IUser) {
+    return this.guestsService.guestGetListOrder(user);
   }
 }

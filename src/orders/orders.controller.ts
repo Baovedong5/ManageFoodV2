@@ -5,11 +5,10 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { Public, ResponseMessage, Roles, User } from 'src/decorators/customize';
+import { ResponseMessage, Roles, User } from 'src/decorators/customize';
 import { Role } from 'src/constants/enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { IUser } from 'src/accounts/user.interface';
@@ -29,8 +28,10 @@ export class OrdersController {
 
   @Roles(Role.Owner, Role.Employee)
   @ResponseMessage('Payment successfully')
-  @Post('/payment')
-  paymentOrder(@Body() guestId: number, @User() orderHandler: IUser){
+  @Post('/pay')
+  paymentOrder(@Body() body: { guestId: number }, @User() orderHandler: IUser) {
+    const { guestId } = body;
+    
     return this.ordersService.paymentOrder(guestId, orderHandler);
   }
 

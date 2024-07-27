@@ -265,6 +265,9 @@ export class GuestsService {
           return {
             ...orderRecord,
             status: orderRecord.status,
+            guest: {
+              ...guest,
+            },
             dishSnapshot: {
               ...dishSnapshot,
               status: dishSnapshot.status,
