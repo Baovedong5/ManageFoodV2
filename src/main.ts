@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import cookieParser from 'cookie-parser';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { RoleGuard } from './core/role.guard';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -42,6 +43,9 @@ async function bootstrap() {
 
   //Enable cookie
   app.use(cookieParser());
+
+  //Enable helmet
+  app.use(helmet());
 
   //Enable versioning
   app.setGlobalPrefix('api');

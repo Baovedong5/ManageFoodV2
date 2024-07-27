@@ -14,6 +14,7 @@ import { GuestsModule } from './guests/guests.module';
 import { AuthModule } from './auth/auth.module';
 import { SeedsModule } from './seeds/seeds.module';
 import { FilesModule } from './files/files.module';
+import { IndicatorModule } from './indicator/indicator.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FilesModule } from './files/files.module';
     AuthModule,
     SeedsModule,
     FilesModule,
+    IndicatorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
