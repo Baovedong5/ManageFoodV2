@@ -14,7 +14,6 @@ export class GuestLoginDto {
   name: string;
 
   @IsNotEmpty()
-  @IsNumber()
   tableNumber: number;
 
   @IsNotEmpty()

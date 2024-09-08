@@ -33,12 +33,10 @@ export class GuestsController {
   @ResponseMessage('Get new token successfully')
   @Post('/auth/refresh-token')
   guestRefreshToken(
-    @Req() request: Request,
+    @Body('refresh_token') refresh_token: string,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const guestRefreshToken = request.cookies['guest_refresh_token'];
-
-    return this.guestsService.guestRefreshToken(guestRefreshToken, response);
+    return this.guestsService.guestRefreshToken(response, refresh_token);
   }
 
   @Roles(Role.Guest)

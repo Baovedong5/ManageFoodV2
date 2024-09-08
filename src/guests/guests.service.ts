@@ -102,6 +102,7 @@ export class GuestsService {
 
     return {
       access_token,
+      refresh_token,
       guest: {
         id: guest.id,
         name: guest.name,
@@ -130,15 +131,15 @@ export class GuestsService {
     };
   }
 
-  async guestRefreshToken(guestRefreshToken: string, response: Response) {
+  async guestRefreshToken(response: Response, refresh_token: string) {
     try {
-      this.jwtService.verify(guestRefreshToken, {
+      this.jwtService.verify(refresh_token, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
 
       let guest = await this.guestRepository.findOne({
         where: {
-          refreshToken: guestRefreshToken,
+          refreshToken: refresh_token,
         },
       });
 
@@ -175,6 +176,7 @@ export class GuestsService {
 
         return {
           access_token: this.jwtService.sign(payload),
+          refresh_token: guest_refresh_token,
           guest: {
             id: guest.id,
             name: guest.name,

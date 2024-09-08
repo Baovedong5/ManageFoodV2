@@ -12,7 +12,13 @@ import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/constants/enum';
 import { ManagerRoom } from 'src/constants/type';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -28,18 +34,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(to).emit(event, data);
   }
 
-  handleEmitSocketFrom({data, event, to, from}){
+  handleEmitSocketFrom({ data, event, to, from }) {
     this.server.to(to).to(from).emit(event, data);
   }
 
   async handleConnection(socket: Socket) {
-    const authHeader = socket.handshake.headers.authorization;
+    const authHeader = socket.handshake.auth.Authorization;
 
-    const accessToken = authHeader.split(' ')[1];
+    console.log(authHeader);
+
+    const accessToken = authHeader?.split(' ')[1];
+
+    console.log('accessToken', accessToken);
 
     if (authHeader && accessToken) {
       try {
         const decoded = this.authService.verifyToken(accessToken);
+        console.log(decoded);
 
         const { id, role } = decoded;
 
@@ -65,9 +76,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         socket.handshake.auth.decoded = decoded;
       } catch (error) {
-        throw error;
+        socket.disconnect();
       }
     }
+
+    console.log(`🔌 Socket connected: ${socket.id}`);
   }
 
   handleDisconnect(socket: Socket) {

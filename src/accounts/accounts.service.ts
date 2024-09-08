@@ -107,6 +107,21 @@ export class AccountsService {
     });
   }
 
+  async getMe(id: number) {
+    const account = await this.accountRepository.findOne({
+      where: {
+        id,
+      },
+      select: ['id', 'name', 'email', 'avatar', 'role'],
+    });
+
+    if (!account) {
+      throw new BadRequestException('Account not found');
+    }
+
+    return account;
+  }
+
   async createEmployeeAccount(body: CreateEmployeeAccountDto) {
     try {
       const hashPassword = this.getHashPassword(body.password);
@@ -168,12 +183,11 @@ export class AccountsService {
   }
 
   async updateMe(id: number, body: UpdateMeDto) {
-    return await this.accountRepository.update(
-      { id },
-      {
-        ...body,
-      },
-    );
+    return await this.accountRepository.save({
+      id,
+      name: body.name,
+      avatar: body.avatar,
+    });
   }
 
   async updateUserRefreshToken(refreshToken: string, id: number) {

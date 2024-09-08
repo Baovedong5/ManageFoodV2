@@ -151,32 +151,26 @@ export class OrdersService {
   async getListOrder(query: queryOrderDto) {
     const { fromDate, toDate } = query;
 
+    let condition = {};
     if (fromDate && toDate) {
-      return await this.orderRepository.find({
-        where: {
-          createdAt: Between(fromDate, toDate),
-        },
-        order: {
-          createdAt: 'DESC',
-        },
-        relations: {
-          dishSnapshot: true,
-          orderHandler: true,
-          guest: true,
-        },
-      });
-    } else {
-      return await this.orderRepository.find({
-        order: {
-          createdAt: 'DESC',
-        },
-        relations: {
-          dishSnapshot: true,
-          orderHandler: true,
-          guest: true,
-        },
-      });
+      condition = {
+        createdAt: Between(new Date(fromDate), new Date(toDate)),
+      };
     }
+
+    const orders = await this.orderRepository.find({
+      where: condition,
+      order: {
+        createdAt: 'DESC',
+      },
+      relations: {
+        dishSnapshot: true,
+        orderHandler: true,
+        guest: true,
+      },
+    });
+
+    return orders;
   }
 
   async getOrderDetail(orderId: number) {
@@ -261,6 +255,8 @@ export class OrdersService {
         guestId: result.guestId,
       },
     });
+
+    console.log(socketRecord);
 
     if (socketRecord?.socketId) {
       this.eventGateway.handleEmitSocketFrom({

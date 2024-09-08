@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   async login(user: IUser, response: Response) {
-    const { id, name, email, role } = user;
+    const { id, name, email, role, avatar } = user;
 
     const payload = {
       sub: 'token login',
@@ -68,6 +68,7 @@ export class AuthService {
         name,
         email,
         role,
+        avatar,
       },
     };
   }
@@ -157,5 +158,9 @@ export class AuthService {
 
   async updateMe(user: IUser, body: UpdateMeDto) {
     return await this.accountService.updateMe(user.id, body);
+  }
+
+  async getMe(user: IUser) {
+    return await this.accountService.getMe(user.id);
   }
 }

@@ -31,7 +31,7 @@ export class AuthController {
   @ResponseMessage('Get user information successfully')
   @Get('/me')
   handleGetAccount(@User() user: IUser) {
-    return { user };
+    return this.authService.getMe(user);
   }
 
   @ResponseMessage('Update infomation successfully')

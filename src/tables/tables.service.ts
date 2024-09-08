@@ -21,19 +21,23 @@ export class TablesService {
 
   async create(createTableDto: CreateTableDto) {
     const token = randomId();
-    try {
-      const table = await this.tableRepository.save({
-        ...createTableDto,
-        token,
-      });
 
-      return table;
-    } catch (error) {
-      if (error.code === '23505') {
-        throw new BadRequestException('Table number already exists');
-      }
-      throw error;
+    const tableExist = await this.tableRepository.findOne({
+      where: {
+        number: createTableDto.number,
+      },
+    });
+
+    if (tableExist) {
+      throw new BadRequestException('Table already exists');
     }
+
+    const table = await this.tableRepository.save({
+      ...createTableDto,
+      token,
+    });
+
+    return table;
   }
 
   async findAll() {
