@@ -60,24 +60,20 @@ export class AccountsService {
   async getGuestList(query: GetGuestListQueryDto) {
     const { fromDate, toDate } = query;
 
+    let condition = {};
     if (fromDate && toDate) {
-      return await this.guestRepository.find({
-        where: {
-          createdAt: Between(fromDate, toDate),
-        },
-        order: {
-          createdAt: 'desc',
-        },
-        select: ['id', 'name', 'tableNumber', 'createdAt', 'updatedAt'],
-      });
-    } else {
-      return await this.guestRepository.find({
-        order: {
-          createdAt: 'desc',
-        },
-        select: ['id', 'name', 'tableNumber', 'createdAt', 'updatedAt'],
-      });
+      condition = {
+        createdAt: Between(new Date(fromDate), new Date(toDate)),
+      };
     }
+
+    return await this.guestRepository.find({
+      where: condition,
+      order: {
+        createdAt: 'desc',
+      },
+      select: ['id', 'name', 'tableNumber', 'createdAt', 'updatedAt'],
+    });
   }
 
   async getInformationEmployee(id: number) {
