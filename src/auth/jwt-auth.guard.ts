@@ -32,7 +32,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw (
         err ||
         new UnauthorizedException(
-          'Token invalid or no Bearer token in Header request',
+          'Token không hợp lệ hoặc không truyền token trong header!',
         )
       );
     }

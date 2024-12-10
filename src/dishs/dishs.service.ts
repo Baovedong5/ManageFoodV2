@@ -32,7 +32,7 @@ export class DishsService {
     });
 
     if (!dish) {
-      throw new BadRequestException('Dish not found');
+      throw new BadRequestException('Món ăn không tồn tại');
     }
 
     return dish;

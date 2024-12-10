@@ -26,6 +26,12 @@ export class Account {
   @Column()
   password: string;
 
+  @Column()
+  address: string;
+
+  @Column()
+  phoneNumber: string;
+
   @Column({ nullable: true })
   avatar: string;
 

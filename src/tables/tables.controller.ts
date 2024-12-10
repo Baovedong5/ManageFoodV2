@@ -18,28 +18,28 @@ export class TablesController {
   constructor(private readonly tablesService: TablesService) {}
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Create table successfully')
+  @ResponseMessage('Tạo bàn thành công')
   @Post()
   create(@Body() createTableDto: CreateTableDto) {
     return this.tablesService.create(createTableDto);
   }
 
   @Public()
-  @ResponseMessage('Get list table successfully')
+  @ResponseMessage('Lấy danh sách bàn thành công')
   @Get()
   findAll() {
     return this.tablesService.findAll();
   }
 
   @Public()
-  @ResponseMessage("Get table's detail successfully")
+  @ResponseMessage('Lấy thông tin bàn thành công')
   @Get(':number')
   findOne(@Param('number') number: string) {
     return this.tablesService.findOne(+number);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Update table successfully')
+  @ResponseMessage('Cập nhật bàn thành công')
   @Patch(':number')
   update(
     @Param('number') number: string,
@@ -49,7 +49,7 @@ export class TablesController {
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Delete table successfully')
+  @ResponseMessage('Xóa bàn thành công')
   @Delete(':number')
   remove(@Param('number') number: string) {
     return this.tablesService.remove(+number);

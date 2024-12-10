@@ -20,37 +20,37 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Successfully create orders for customers')
+  @ResponseMessage('Tạo thành công đơn hàng cho khách hàng')
   @Post()
   createOrder(@Body() body: CreateOrderDto, @User() user: IUser) {
     return this.ordersService.create(body, user);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Payment successfully')
+  @ResponseMessage('Thanh toán thành công')
   @Post('/pay')
   paymentOrder(@Body() body: { guestId: number }, @User() orderHandler: IUser) {
     const { guestId } = body;
-    
+
     return this.ordersService.paymentOrder(guestId, orderHandler);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Get list order successfully')
+  @ResponseMessage('Lấy danh sách đơn hàng thành công')
   @Get()
   getListOrder(@Query() query: queryOrderDto) {
     return this.ordersService.getListOrder(query);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Get information order successfully')
+  @ResponseMessage('Lấy đơn hàng thành công')
   @Get(':orderId')
   getOrderDetail(@Param('orderId') orderId: string) {
     return this.ordersService.getOrderDetail(+orderId);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Update order successfully')
+  @ResponseMessage('Cập nhật đơn hàng thành công')
   @Patch(':orderId')
   updateOrder(
     @Param('orderId') orderId: string,

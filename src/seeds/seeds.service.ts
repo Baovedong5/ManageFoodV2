@@ -33,6 +33,8 @@ export class SeedsService implements OnModuleInit {
             password: this.accountService.getHashPassword(
               this.configService.get<string>('INIT_PASSWORD'),
             ),
+            address: 'Đông Anh - Hà Nội',
+            phoneNumber: '0978455234',
             role: Role.Owner,
           },
           {
@@ -41,6 +43,8 @@ export class SeedsService implements OnModuleInit {
             password: this.accountService.getHashPassword(
               this.configService.get<string>('INIT_PASSWORD'),
             ),
+            address: 'Bắc Giang',
+            phoneNumber: '0973627848',
             role: Role.Employee,
           },
         ]);

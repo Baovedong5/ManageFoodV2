@@ -29,7 +29,10 @@ export class TablesService {
     });
 
     if (tableExist) {
-      throw new BadRequestException('Table already exists');
+      throw new BadRequestException({
+        message: 'Số bàn này đã tồn tại',
+        field: 'number',
+      });
     }
 
     const table = await this.tableRepository.save({
@@ -56,7 +59,7 @@ export class TablesService {
     });
 
     if (!table) {
-      throw new BadRequestException('Table does not exist');
+      throw new BadRequestException('Bàn không tồn tại');
     }
 
     return table;

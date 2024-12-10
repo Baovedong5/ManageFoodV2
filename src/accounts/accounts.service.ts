@@ -44,14 +44,23 @@ export class AccountsService {
     return compareSync(password, hassPassword);
   }
 
-  async getAllEmployees(user: IUser) {
-    const { id } = user;
+  async getAllEmployees() {
     const listEmployee = await this.accountRepository.find({
       order: {
         createdAt: 'desc',
       },
-      where: { id: Not(id) },
-      select: ['id', 'email', 'name', 'role', 'avatar'],
+      where: {
+        role: Role.Employee,
+      },
+      select: [
+        'id',
+        'email',
+        'name',
+        'role',
+        'avatar',
+        'address',
+        'phoneNumber',
+      ],
     });
 
     return listEmployee;
@@ -81,7 +90,15 @@ export class AccountsService {
       where: {
         id,
       },
-      select: ['id', 'name', 'email', 'avatar', 'role'],
+      select: [
+        'id',
+        'name',
+        'email',
+        'avatar',
+        'role',
+        'address',
+        'phoneNumber',
+      ],
     });
 
     return account;
@@ -108,12 +125,16 @@ export class AccountsService {
       where: {
         id,
       },
-      select: ['id', 'name', 'email', 'avatar', 'role'],
+      select: [
+        'id',
+        'name',
+        'email',
+        'avatar',
+        'role',
+        'address',
+        'phoneNumber',
+      ],
     });
-
-    if (!account) {
-      throw new BadRequestException('Account not found');
-    }
 
     return account;
   }
@@ -125,6 +146,8 @@ export class AccountsService {
         name: body.name,
         email: body.email,
         password: hashPassword,
+        address: body.address,
+        phoneNumber: body.phoneNumber,
         role: Role.Employee,
         avatar: body.avatar,
       });
@@ -140,7 +163,7 @@ export class AccountsService {
       };
     } catch (error) {
       if (error.code === '23505') {
-        throw new BadRequestException('Email already exists');
+        throw new BadRequestException([{}]);
       }
       throw error;
     }
@@ -154,12 +177,12 @@ export class AccountsService {
     });
 
     if (!table) {
-      throw new BadRequestException('Table is not exist!');
+      throw new BadRequestException('Bàn không tồn tại');
     }
 
     if (table.status === TableStatus.Hidden) {
       throw new BadRequestException(
-        `Table is ${table.number} hidden, please choose another table!`,
+        `Bàn ${table.number} đã bị ẩn, vui lòng chọn bàn khác`,
       );
     }
 
@@ -182,6 +205,8 @@ export class AccountsService {
     return await this.accountRepository.save({
       id,
       name: body.name,
+      address: body.address,
+      phoneNumber: body.phoneNumber,
       avatar: body.avatar,
     });
   }
@@ -213,9 +238,10 @@ export class AccountsService {
       ]);
 
       if (!oldAccount) {
-        throw new BadRequestException(
-          'The account you are trying to update no longer exists!',
-        );
+        throw new BadRequestException({
+          field: 'email',
+          message: 'Tài khoản bạn đang cập nhật không còn tồn tại nữa',
+        });
       }
 
       const isChangeRole = oldAccount.role !== updateData.role;
@@ -233,6 +259,8 @@ export class AccountsService {
             name: updateData.name,
             email: updateData.email,
             avatar: updateData.avatar,
+            address: updateData.address,
+            phoneNumber: updateData.phoneNumber,
             password: hashPassword,
             role: updateData.role,
           },
@@ -246,6 +274,8 @@ export class AccountsService {
             name: updateData.name,
             email: updateData.email,
             avatar: updateData.avatar,
+            address: updateData.address,
+            phoneNumber: updateData.phoneNumber,
             role: updateData.role,
           },
         );
@@ -262,7 +292,10 @@ export class AccountsService {
       return account;
     } catch (error) {
       if (error.code === '23505') {
-        throw new BadRequestException('Email already exists');
+        throw new BadRequestException({
+          field: 'email',
+          message: 'Email đã tồn tại',
+        });
       }
       throw error;
     }
@@ -282,7 +315,7 @@ export class AccountsService {
 
     if (!isSamePassword) {
       throw new BadRequestException({
-        message: 'Old password is incorrect',
+        message: 'Mât khẩu cũ không đúng',
         field: 'oldPassword',
       });
     }

@@ -52,7 +52,7 @@ export class OrdersService {
 
     if (guest.tableNumber === null) {
       throw new BadRequestException(
-        'The table associated with this customer has been deleted, please choose another customer!',
+        'Bàn gắn liền với khách hàng này đã bị xóa, vui lòng chọn khách hàng khác!',
       );
     }
 
@@ -64,7 +64,7 @@ export class OrdersService {
 
     if (table.status === TableStatus.Hidden) {
       throw new BadRequestException(
-        'The table associated with this customer has been hidden, please choose another customer!',
+        `Bàn ${table.number} gắn liền với khách hàng đã bị ẩn, vui lòng chọn khách hàng khác!`,
       );
     }
 
@@ -79,11 +79,11 @@ export class OrdersService {
             });
 
             if (dish.status === DishStatus.Unavailable) {
-              throw new BadRequestException(`Dish ${dish.name} is unavailable`);
+              throw new BadRequestException(`Món ${dish.name} đã hết`);
             }
 
             if (dish.status === DishStatus.Hidden) {
-              throw new BadRequestException(`Dish ${dish.name} is hidden`);
+              throw new BadRequestException(`Món ${dish.name} không thể đặt`);
             }
 
             const dishSnapshot = await this.dishSnapshotRepository.save({
@@ -182,6 +182,7 @@ export class OrdersService {
         dishSnapshot: true,
         orderHandler: true,
         guest: true,
+        table: true,
       },
     });
 
@@ -292,7 +293,7 @@ export class OrdersService {
     });
 
     if (orders.length === 0) {
-      throw new BadRequestException('No orders to pay');
+      throw new BadRequestException('Không có hóa đơn nào cần thanh toán');
     }
 
     await this.dataSource.transaction(async (manager) => {

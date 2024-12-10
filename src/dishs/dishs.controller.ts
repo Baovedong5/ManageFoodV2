@@ -18,35 +18,35 @@ export class DishsController {
   constructor(private readonly dishsService: DishsService) {}
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Create dish successfully!')
+  @ResponseMessage('Tạo món ăn thành công!')
   @Post()
   create(@Body() createDishDto: CreateDishDto) {
     return this.dishsService.create(createDishDto);
   }
 
   @Public()
-  @ResponseMessage('Get list dish successfully!')
+  @ResponseMessage('Lấy danh sách món ăn thành công!')
   @Get()
   findAll() {
     return this.dishsService.findAll();
   }
 
   @Public()
-  @ResponseMessage('Get infomation dish successfully!')
+  @ResponseMessage('Lấy thông tin món ăn thành công!')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dishsService.findOne(+id);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Update dish successfully!')
+  @ResponseMessage('Cập nhật món ăn thành công!')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDishDto: UpdateDishDto) {
     return this.dishsService.update(+id, updateDishDto);
   }
 
   @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Delete dish successfully!')
+  @ResponseMessage('Xóa món ăn thành công!')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.dishsService.remove(+id);

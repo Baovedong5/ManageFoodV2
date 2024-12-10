@@ -15,7 +15,6 @@ import {
 import { IsPasswordMatchingConstraint } from './create-employee-account.dto';
 import { Role } from 'src/constants/enum';
 
-
 @ValidatorConstraint({ name: 'isChangePasswordValid', async: false })
 export class IsChangePasswordValidConstraint
   implements ValidatorConstraintInterface
@@ -47,6 +46,14 @@ export class UpdateAccountEmployeeDto {
   @IsOptional()
   @IsString()
   avatar: string;
+
+  @IsOptional()
+  @IsString()
+  address: string;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber: string;
 
   @IsOptional()
   @IsBoolean()

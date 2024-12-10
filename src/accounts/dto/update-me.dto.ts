@@ -15,5 +15,13 @@ export class UpdateMeDto {
 
   @IsOptional()
   @IsString()
+  address: string;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber: string;
+
+  @IsOptional()
+  @IsString()
   avatar: string;
 }

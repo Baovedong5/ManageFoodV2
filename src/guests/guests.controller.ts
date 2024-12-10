@@ -12,7 +12,7 @@ export class GuestsController {
   constructor(private readonly guestsService: GuestsService) {}
 
   @Public()
-  @ResponseMessage('Login successfully')
+  @ResponseMessage('Đăng nhập thành công')
   @Post('/auth/login')
   guestLogin(
     @Body() body: GuestLoginDto,
@@ -21,7 +21,7 @@ export class GuestsController {
     return this.guestsService.guestLogin(body, response);
   }
 
-  @ResponseMessage('Logout successfully')
+  @ResponseMessage('Đăng xuất thành công')
   @Post('/auth/logout')
   guestLogout(
     @Res({ passthrough: true }) response: Response,
@@ -31,21 +31,21 @@ export class GuestsController {
   }
 
   @Public()
-  @ResponseMessage('Get new token successfully')
+  @ResponseMessage('Lấy token mới thành công')
   @Post('/auth/refresh-token')
   guestRefreshToken(@Body('refresh_token') refresh_token: string) {
     return this.guestsService.guestRefreshToken(refresh_token);
   }
 
   @Roles(Role.Guest)
-  @ResponseMessage('Order successfully')
+  @ResponseMessage('Đặt món thành công')
   @Post('/orders')
   guestCreateOrder(@Body() body: guestCreateOrderDto[], @User() user: IUser) {
     return this.guestsService.guestCreateOrder(body, user);
   }
 
   @Roles(Role.Guest)
-  @ResponseMessage('Get lish order successfully')
+  @ResponseMessage('Lấy danh sách đơn hàng thành công')
   @Get('/orders')
   guestGetListOrder(@User() user: IUser) {
     return this.guestsService.guestGetListOrder(user);

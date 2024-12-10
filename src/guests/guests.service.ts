@@ -195,7 +195,7 @@ export class GuestsService {
 
       if (guest.tableNumber === null) {
         throw new BadRequestException(
-          'Your table has been deleted, please log out and log in again to a new table',
+          'Bàn của bạn đã bị xóa, vui lòng đăng xuất và đăng nhập lại một bàn mới',
         );
       }
 
@@ -207,13 +207,13 @@ export class GuestsService {
 
       if (table.status === TableStatus.Hidden) {
         throw new BadRequestException(
-          'Table is hidden, please log out and choose another table',
+          `Bàn ${table.number} đã bị ẩn, vui lòng đăng xuất và chọn bàn khác`,
         );
       }
 
       if (table.status === TableStatus.Reserved) {
         throw new BadRequestException(
-          'Table is reserved, please log out and contact staff for assistance',
+          `Bàn ${table.number} đã được đặt trước, vui lòng đăng xuất và chọn bàn khác`,
         );
       }
 
@@ -226,11 +226,11 @@ export class GuestsService {
           });
 
           if (dish.status === DishStatus.Unavailable) {
-            throw new BadRequestException(`Dish ${dish.name} is unavailable`);
+            throw new BadRequestException(`Món ${dish.name} đã hết`);
           }
 
           if (dish.status === DishStatus.Hidden) {
-            throw new BadRequestException(`Dish ${dish.name} is hidden`);
+            throw new BadRequestException(`Món ${dish.name} không thể đặt`);
           }
 
           const dishSnapshot = await dishSnapshotRepository.save({

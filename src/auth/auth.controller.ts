@@ -22,26 +22,26 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
-  @ResponseMessage('Login successfully')
+  @ResponseMessage('Đăng nhập thành công')
   @Post('/login')
   handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
     return this.authService.login(req.user, response);
   }
 
-  @ResponseMessage('Get user information successfully')
+  @ResponseMessage('Lấy thông tin thành công')
   @Get('/me')
   handleGetAccount(@User() user: IUser) {
     return this.authService.getMe(user);
   }
 
-  @ResponseMessage('Update infomation successfully')
+  @ResponseMessage('Cập nhật thông tin thành công')
   @Patch('/me')
   handleUpdateMe(@User() user: IUser, @Body() body: UpdateMeDto) {
     return this.authService.updateMe(user, body);
   }
 
   @Public()
-  @ResponseMessage('Get user by refresh token successfully')
+  @ResponseMessage('Lấy token mới thành công')
   @Post('/refresh')
   handleRefreshToken(
     @Body('refresh_token') refreshToken: string,
@@ -50,7 +50,7 @@ export class AuthController {
     return this.authService.processNewToken(refreshToken, response);
   }
 
-  @ResponseMessage('Logout successfully')
+  @ResponseMessage('Đăng xuất thành công')
   @Post('/logout')
   handleLogout(
     @Res({ passthrough: true }) response: Response,
@@ -59,25 +59,9 @@ export class AuthController {
     return this.authService.logout(response, user);
   }
 
-  @ResponseMessage('Change password successfully')
+  @ResponseMessage('Đổi mật khẩu thành công')
   @Patch('/change-password')
   handleChangePassword(@User() user: IUser, @Body() body: ChangePasswordDto) {
     return this.authService.changePassword(user, body);
-  }
-
-  @Public()
-  @Get('/login/google')
-  handleGoogleLogin() {
-    return {
-      msg: 'Google Authentication',
-    };
-  }
-
-  @Public()
-  @Get('/google/redirect')
-  handleRedirect() {
-    return {
-      msg: 'OK',
-    };
   }
 }

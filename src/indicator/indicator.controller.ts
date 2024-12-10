@@ -8,8 +8,8 @@ import { QueryIndicatorDto } from './dto/query-indicator.dto';
 export class IndicatorController {
   constructor(private readonly indicatorService: IndicatorService) {}
 
-  @Roles(Role.Owner, Role.Employee)
-  @ResponseMessage('Get the parameters successfully')
+  @Roles(Role.Owner)
+  @ResponseMessage('Lấy các chỉ số thành công')
   @Get('/dashboard')
   dashboardIndicator(@Query() query: QueryIndicatorDto) {
     return this.indicatorService.dashboardIndicator(query);
