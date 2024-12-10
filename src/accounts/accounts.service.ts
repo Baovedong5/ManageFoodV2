@@ -281,7 +281,10 @@ export class AccountsService {
     );
 
     if (!isSamePassword) {
-      throw new BadRequestException('Old password is incorrect');
+      throw new BadRequestException({
+        message: 'Old password is incorrect',
+        field: 'oldPassword',
+      });
     }
 
     const hashPassword = this.getHashPassword(body.newPassword);

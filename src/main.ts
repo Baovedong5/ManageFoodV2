@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { RoleGuard } from './core/role.guard';
 import helmet from 'helmet';
+import { CustomBadRequestExceptionFilter } from './core/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -30,6 +31,9 @@ async function bootstrap() {
 
   //Enable global interceptor
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
+
+  //enable global filter
+  app.useGlobalFilters(new CustomBadRequestExceptionFilter());
 
   //config static file
   app.useStaticAssets(join(__dirname, '..', 'public'));

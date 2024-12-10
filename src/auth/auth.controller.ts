@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
 import { Public, ResponseMessage, User } from 'src/decorators/customize';
 import { LocalAuthGuard } from './local-auth.guard';
 import { IUser } from 'src/accounts/user.interface';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { UpdateMeDto } from 'src/accounts/dto/update-me.dto';
 import { ChangePasswordDto } from 'src/accounts/dto/change-password.dto';
 
@@ -63,5 +63,21 @@ export class AuthController {
   @Patch('/change-password')
   handleChangePassword(@User() user: IUser, @Body() body: ChangePasswordDto) {
     return this.authService.changePassword(user, body);
+  }
+
+  @Public()
+  @Get('/login/google')
+  handleGoogleLogin() {
+    return {
+      msg: 'Google Authentication',
+    };
+  }
+
+  @Public()
+  @Get('/google/redirect')
+  handleRedirect() {
+    return {
+      msg: 'OK',
+    };
   }
 }

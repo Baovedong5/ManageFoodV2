@@ -84,12 +84,6 @@ export class GuestsService {
         ms(this.configService.get<string>('GUEST_JWT_REFRESH_EXPIRE')) / 1000,
     });
 
-    //set refresh token in cookie
-    response.cookie('guest_refresh_token', refresh_token, {
-      httpOnly: true,
-      maxAge: ms(this.configService.get<string>('GUEST_JWT_REFRESH_EXPIRE')),
-    });
-
     //update guest with refresh token
     await this.guestRepository.update(
       {
@@ -131,7 +125,7 @@ export class GuestsService {
     };
   }
 
-  async guestRefreshToken(response: Response, refresh_token: string) {
+  async guestRefreshToken(refresh_token: string) {
     try {
       this.jwtService.verify(refresh_token, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
@@ -163,17 +157,6 @@ export class GuestsService {
           { refreshToken: guest_refresh_token },
         );
 
-        //clear old refresh token
-        response.clearCookie('guest_refresh_token');
-
-        //set cookie with new refresh token
-        response.cookie('guest_refresh_token', guest_refresh_token, {
-          httpOnly: true,
-          maxAge: ms(
-            this.configService.get<string>('GUEST_JWT_REFRESH_EXPIRE'),
-          ),
-        });
-
         return {
           access_token: this.jwtService.sign(payload),
           refresh_token: guest_refresh_token,
@@ -187,9 +170,13 @@ export class GuestsService {
           },
         };
       } else {
+        console.log('A');
+
         throw new BadRequestException('Refresh token is invalid. Please login');
       }
     } catch (error) {
+      console.log('B');
+
       throw new BadRequestException('Refresh token is invalid. Please login');
     }
   }
@@ -289,7 +276,7 @@ export class GuestsService {
   }
 
   async guestGetListOrder(user: IUser) {
-    return this.orderRepository.find({
+    return await this.orderRepository.find({
       where: {
         guestId: user.id,
       },

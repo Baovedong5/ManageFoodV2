@@ -54,12 +54,6 @@ export class AuthService {
     //update user with refresh token
     await this.accountService.updateUserRefreshToken(refresh_token, id);
 
-    //set refresh token in cookie
-    response.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
-    });
-
     return {
       access_token: this.jwtService.sign(payload),
       refresh_token: refresh_token,
@@ -149,7 +143,7 @@ export class AuthService {
   async logout(response: Response, user: IUser) {
     await this.accountService.updateUserRefreshToken('', user.id);
     response.clearCookie('refresh_token');
-    return 'oke';
+    return 'Đăng xuất thành công';
   }
 
   async changePassword(user: IUser, body: ChangePasswordDto) {

@@ -27,7 +27,7 @@ export class IndicatorService {
     const [orders, guests, dishes] = await Promise.all([
       this.orderRepository.find({
         where: {
-          createdAt: Between(fromDate, toDate),
+          createdAt: Between(new Date(fromDate), new Date(toDate)),
         },
         relations: {
           dishSnapshot: true,
@@ -39,7 +39,7 @@ export class IndicatorService {
       }),
       this.guestRepository.find({
         where: {
-          createdAt: Between(fromDate, toDate),
+          createdAt: Between(new Date(fromDate), new Date(toDate)),
           orders: {
             status: OrderStatus.Paid,
           },
