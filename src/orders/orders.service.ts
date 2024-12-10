@@ -42,7 +42,7 @@ export class OrdersService {
   ) {}
 
   async create(body: CreateOrderDto, user: IUser) {
-    const { guestId, orders } = body;
+    const { guestId, orders, paymentRef } = body;
 
     const guest = await this.guestRepository.findOneOrFail({
       where: {
@@ -114,6 +114,7 @@ export class OrdersService {
                 ...dishSnapshot,
                 status: dishSnapshot.status,
               },
+              ...(paymentRef && { paymentRef }),
             };
           }),
         );

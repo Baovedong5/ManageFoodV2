@@ -44,6 +44,9 @@ export class Order {
   quantity: number;
 
   @Column({ nullable: true })
+  paymentRef: string;
+
+  @Column({ nullable: true })
   orderHandlerId: number;
 
   @ManyToOne(() => Account, (account) => account.orders, {

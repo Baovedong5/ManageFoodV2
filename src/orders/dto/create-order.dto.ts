@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, ValidateNested, IsArray } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  ValidateNested,
+  IsArray,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class OrderItemDto {
@@ -15,6 +22,10 @@ export class CreateOrderDto {
   @IsNotEmpty()
   @IsNumber()
   guestId: number;
+
+  @IsOptional()
+  @IsString()
+  paymentRef: string;
 
   @IsArray()
   @ValidateNested({ each: true })
