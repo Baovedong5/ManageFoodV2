@@ -26,6 +26,9 @@ export class Dish {
   @Column()
   image: string;
 
+  @Column()
+  category: string;
+
   @Column({
     type: 'enum',
     enum: DishStatus,

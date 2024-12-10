@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVnpayDto } from './dto/create-vnpay.dto';
-import { UpdateVnpayDto } from './dto/update-vnpay.dto';
 import { ConfigService } from '@nestjs/config';
 import crypto from 'crypto';
 import dayjs from 'dayjs';
@@ -71,25 +70,5 @@ export class VnpayService {
     return {
       url: vnpUrl,
     };
-  }
-
-  create(createVnpayDto: CreateVnpayDto) {
-    return 'This action adds a new vnpay';
-  }
-
-  findAll() {
-    return `This action returns all vnpay`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} vnpay`;
-  }
-
-  update(id: number, updateVnpayDto: UpdateVnpayDto) {
-    return `This action updates a #${id} vnpay`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} vnpay`;
   }
 }

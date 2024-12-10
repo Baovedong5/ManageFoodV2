@@ -16,6 +16,7 @@ import { SeedsModule } from './seeds/seeds.module';
 import { FilesModule } from './files/files.module';
 import { IndicatorModule } from './indicator/indicator.module';
 import { VnpayModule } from './vnpay/vnpay.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { VnpayModule } from './vnpay/vnpay.module';
     FilesModule,
     IndicatorModule,
     VnpayModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
