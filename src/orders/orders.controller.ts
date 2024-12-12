@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { ResponseMessage, Roles, User } from 'src/decorators/customize';
+import { Public, ResponseMessage, Roles, User } from 'src/decorators/customize';
 import { Role } from 'src/constants/enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { IUser } from 'src/accounts/user.interface';
@@ -58,5 +58,12 @@ export class OrdersController {
     @User() orderHandler: IUser,
   ) {
     return this.ordersService.updateOrder(+orderId, body, orderHandler);
+  }
+
+  @Public()
+  @ResponseMessage('Cập nhật trạng thái thành công')
+  @Post('/update-payment-status')
+  updatePaymentStatus(@Body() body: UpdateOrderDto) {
+    return this.ordersService.updatePaymentStatus(body);
   }
 }

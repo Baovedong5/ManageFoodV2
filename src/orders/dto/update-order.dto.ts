@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { OrderStatus } from 'src/constants/enum';
 
 export class UpdateOrderDto {
@@ -13,4 +13,8 @@ export class UpdateOrderDto {
   @IsOptional()
   @IsEnum(OrderStatus)
   status: OrderStatus;
+
+  @IsOptional()
+  @IsString()
+  paymentRef: string;
 }

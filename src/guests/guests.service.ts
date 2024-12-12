@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guest } from './entities/guest.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { GuestLoginDto } from './dto/guest-login.dto';
 import { Table } from 'src/tables/entities/table.entity';
 import { DishStatus, OrderStatus, Role, TableStatus } from 'src/constants/enum';
@@ -16,6 +16,7 @@ import { Dish } from 'src/dishs/entities/dish.entity';
 import { DishSnapshot } from 'src/dishsnapshots/entities/dishsnapshot.entity';
 import { EventGateway } from 'src/sockets/gateways/event.gateway';
 import { ManagerRoom } from 'src/constants/type';
+import { SocketIo } from 'src/sockets/entities/socket.entity';
 
 @Injectable()
 export class GuestsService {
@@ -28,6 +29,9 @@ export class GuestsService {
 
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
+
+    @InjectRepository(SocketIo)
+    private socketIoRepository: Repository<SocketIo>,
 
     private jwtService: JwtService,
 
@@ -286,5 +290,79 @@ export class GuestsService {
         guest: true,
       },
     });
+  }
+
+  async guestPayment(body: { guestId: number; paymentRef: string }) {
+    const { guestId, paymentRef } = body;
+
+    const orders = await this.orderRepository.find({
+      where: {
+        guestId,
+        status: In([
+          OrderStatus.Pending,
+          OrderStatus.Processing,
+          OrderStatus.Delivered,
+        ]),
+      },
+    });
+
+    if (orders.length === 0) {
+      throw new BadRequestException('Không có hóa đơn nào cần thanh toán');
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      const orderIds = orders.map((order) => order.id);
+      await manager.update(
+        Order,
+        {
+          id: In(orderIds),
+        },
+        {
+          paymentRef: paymentRef,
+        },
+      );
+    });
+
+    const [ordersResult, socketRecord] = await Promise.all([
+      this.orderRepository.find({
+        where: {
+          id: In(orders.map((order) => order.id)),
+        },
+        relations: {
+          dishSnapshot: true,
+          orderHandler: true,
+          guest: true,
+        },
+        order: {
+          createdAt: 'DESC',
+        },
+      }),
+      this.socketIoRepository.findOne({
+        where: {
+          guestId,
+        },
+      }),
+    ]);
+
+    if (socketRecord?.socketId) {
+      this.eventGateway.handleEmitSocketFrom({
+        data: ordersResult,
+        event: 'payment-vnpay',
+        to: socketRecord.socketId,
+        from: ManagerRoom,
+      });
+    } else {
+      this.eventGateway.handleEmitSocket({
+        data: ordersResult,
+        event: 'payment-vnpay',
+        to: ManagerRoom,
+      });
+    }
+
+    return {
+      orders: ordersResult,
+      paymentRef: paymentRef,
+      socketId: socketRecord?.socketId,
+    };
   }
 }

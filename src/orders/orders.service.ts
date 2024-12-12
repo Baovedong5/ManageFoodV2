@@ -258,8 +258,6 @@ export class OrdersService {
       },
     });
 
-    console.log(socketRecord);
-
     if (socketRecord?.socketId) {
       this.eventGateway.handleEmitSocketFrom({
         data: result,
@@ -349,6 +347,63 @@ export class OrdersService {
 
     return {
       orders: ordersResult,
+      socketId: socketRecord?.socketId,
+    };
+  }
+
+  async updatePaymentStatus(body: UpdateOrderDto) {
+    const { status, paymentRef } = body;
+
+    const result = await this.dataSource.transaction(async (manager) => {
+      // Tìm tất cả các đơn hàng có paymentRef
+      const orders = await this.orderRepository.find({
+        where: {
+          paymentRef,
+        },
+        relations: {
+          dishSnapshot: true,
+          guest: true,
+        },
+      });
+
+      // Cập nhật trạng thái của tất cả các đơn hàng tìm thấy
+      await this.orderRepository.update(
+        {
+          paymentRef,
+        },
+        {
+          status,
+        },
+      );
+
+      return orders;
+    });
+
+    const guest = result[0]?.guest;
+
+    const socketRecord = await this.socketIoRepository.findOne({
+      where: {
+        guestId: guest.id,
+      },
+    });
+
+    if (socketRecord?.socketId) {
+      this.eventGateway.handleEmitSocketFrom({
+        data: result,
+        event: 'update-order-payment',
+        to: socketRecord.socketId,
+        from: ManagerRoom,
+      });
+    } else {
+      this.eventGateway.handleEmitSocket({
+        data: result,
+        event: 'update-order-payment',
+        to: ManagerRoom,
+      });
+    }
+
+    return {
+      order: result,
       socketId: socketRecord?.socketId,
     };
   }

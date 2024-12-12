@@ -9,10 +9,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { SocketsModule } from 'src/sockets/sockets.module';
 import { Order } from 'src/orders/entities/order.entity';
+import { SocketIo } from 'src/sockets/entities/socket.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Guest, Table, Order]),
+    TypeOrmModule.forFeature([Guest, Table, Order, SocketIo]),
     SocketsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

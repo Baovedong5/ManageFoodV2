@@ -50,4 +50,11 @@ export class GuestsController {
   guestGetListOrder(@User() user: IUser) {
     return this.guestsService.guestGetListOrder(user);
   }
+
+  @Roles(Role.Guest)
+  @ResponseMessage('Thanh toán trực tiếp')
+  @Post('/payment-vnpay')
+  guestPaymentVnPay(@Body() body: { guestId: number; paymentRef: string }) {
+    return this.guestsService.guestPayment(body);
+  }
 }
