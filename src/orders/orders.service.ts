@@ -155,7 +155,7 @@ export class OrdersService {
     let condition = {};
     if (fromDate && toDate) {
       condition = {
-        createdAt: Between(new Date(fromDate), new Date(toDate)),
+        createdAt: Between(fromDate, toDate),
       };
     }
 

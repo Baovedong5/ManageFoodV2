@@ -6,10 +6,15 @@ import { Request, Response } from 'express';
 import { IUser } from 'src/accounts/user.interface';
 import { Role } from 'src/constants/enum';
 import { guestCreateOrderDto } from './dto/guest-create-order.dto';
+import { EventGateway } from 'src/sockets/gateways/event.gateway';
+import { ManagerRoom } from 'src/constants/type';
 
 @Controller('guests')
 export class GuestsController {
-  constructor(private readonly guestsService: GuestsService) {}
+  constructor(
+    private readonly guestsService: GuestsService,
+    private eventGateway: EventGateway,
+  ) {}
 
   @Public()
   @ResponseMessage('Đăng nhập thành công')
@@ -40,8 +45,17 @@ export class GuestsController {
   @Roles(Role.Guest)
   @ResponseMessage('Đặt món thành công')
   @Post('/orders')
-  guestCreateOrder(@Body() body: guestCreateOrderDto[], @User() user: IUser) {
-    return this.guestsService.guestCreateOrder(body, user);
+  async guestCreateOrder(
+    @Body() body: guestCreateOrderDto[],
+    @User() user: IUser,
+  ) {
+    const result = await this.guestsService.guestCreateOrder(body, user);
+    this.eventGateway.handleEmitSocket({
+      data: result,
+      event: 'new-order',
+      to: ManagerRoom,
+    });
+    return result;
   }
 
   @Roles(Role.Guest)

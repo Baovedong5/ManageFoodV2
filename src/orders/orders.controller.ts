@@ -38,8 +38,8 @@ export class OrdersController {
   @Roles(Role.Owner, Role.Employee)
   @ResponseMessage('Lấy danh sách đơn hàng thành công')
   @Get()
-  getListOrder(@Query() query: queryOrderDto) {
-    return this.ordersService.getListOrder(query);
+  async getListOrder(@Query() query: queryOrderDto) {
+    return await this.ordersService.getListOrder(query);
   }
 
   @Roles(Role.Owner, Role.Employee)

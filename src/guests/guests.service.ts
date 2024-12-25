@@ -51,18 +51,20 @@ export class GuestsService {
     });
 
     if (!table) {
-      throw new BadRequestException('Table does not exist or token is invalid');
+      throw new BadRequestException(
+        'Bàn không tồn tại hoặc mã token không đúng',
+      );
     }
 
     if (table.status === TableStatus.Hidden) {
       throw new BadRequestException(
-        'Table is hidden, please choose another table',
+        'Bàn này đã bị ẩn, hãy chọn bàn khác để đăng nhập',
       );
     }
 
     if (table.status === TableStatus.Reserved) {
       throw new BadRequestException(
-        'The table has been previously installed, please contact staff for assistance',
+        'Bàn đã được đặt trước, hãy liên hệ nhân viên để được hỗ trợ',
       );
     }
 
@@ -269,11 +271,11 @@ export class GuestsService {
         }),
       );
 
-      this.eventGateway.handleEmitSocket({
-        data: orders,
-        event: 'new-order',
-        to: ManagerRoom,
-      });
+      // this.eventGateway.handleEmitSocket({
+      //   data: orders,
+      //   event: 'new-order',
+      //   to: ManagerRoom,
+      // });
 
       return orders;
     });
@@ -283,6 +285,9 @@ export class GuestsService {
     return await this.orderRepository.find({
       where: {
         guestId: user.id,
+      },
+      order: {
+        createdAt: 'DESC',
       },
       relations: {
         dishSnapshot: true,

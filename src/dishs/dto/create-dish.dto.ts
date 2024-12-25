@@ -26,7 +26,6 @@ export class CreateDishDto {
   @IsString()
   category: string;
 
-  @IsNotEmpty()
   @IsString()
   @MaxLength(10000)
   description: string;
